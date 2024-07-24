@@ -2986,6 +2986,12 @@ extern "C" JNIEXPORT void numa_warn(int number, char *where, ...) { }
 extern "C" JNIEXPORT void numa_error(char *where) { }
 extern "C" JNIEXPORT int fork1() { return fork(); }
 
+#ifndef __GLIBC__
+static void *dlvsym(void *handle, const char *name, const char *ver) {
+  return dlsym(handle, name);
+}
+#endif
+
 // Handle request to load libnuma symbol version 1.1 (API v1). If it fails
 // load symbol from base version instead.
 void* os::Linux::libnuma_dlsym(void* handle, const char *name) {
