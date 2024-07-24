@@ -2028,7 +2028,7 @@ void * os::dll_load(const char *filename, char *ebuf, int ebuflen)
   // Identify compatability class for VM's architecture and library's architecture
   // Obtain string descriptions for architectures
 
-  arch_t lib_arch={elf_head.e_machine,0,elf_head.e_ident[EI_CLASS], elf_head.e_ident[EI_DATA], NULL};
+  arch_t lib_arch={elf_head.e_machine,0,static_cast<char>(elf_head.e_ident[EI_CLASS]), static_cast<char>(elf_head.e_ident[EI_DATA]), NULL};
   int running_arch_index=-1;
 
   for (unsigned int i=0 ; i < ARRAY_SIZE(arch_array) ; i++ ) {
