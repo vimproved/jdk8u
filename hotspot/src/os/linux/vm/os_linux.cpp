@@ -95,7 +95,6 @@
 # include <string.h>
 # include <syscall.h>
 # include <sys/sysinfo.h>
-# include <gnu/libc-version.h>
 # include <sys/ipc.h>
 # include <sys/shm.h>
 # include <link.h>
@@ -104,6 +103,10 @@
 # include <sys/ioctl.h>
 
 PRAGMA_FORMAT_MUTE_WARNINGS_FOR_GCC
+
+#ifdef __GLIBC__
+  #include <gnu/libc-version.h>
+#endif
 
 #ifndef _GNU_SOURCE
   #define _GNU_SOURCE
@@ -577,6 +580,7 @@ void os::Linux::hotspot_sigmask(Thread* thread) {
 // detecting pthread library
 
 void os::Linux::libpthread_init() {
+# ifdef __GLIBC__
   // Save glibc and pthread version strings. Note that _CS_GNU_LIBC_VERSION
   // and _CS_GNU_LIBPTHREAD_VERSION are supported in glibc >= 2.3.2. Use a
   // generic name for earlier versions.
@@ -635,6 +639,12 @@ void os::Linux::libpthread_init() {
   if (os::Linux::is_NPTL() || os::Linux::supports_variable_stack_size()) {
      os::Linux::set_is_floating_stack();
   }
+# else
+  os::Linux::set_glibc_version("glibc 2.9");
+  os::Linux::set_libpthread_version("NPTL");
+  os::Linux::set_is_NPTL();
+  os::Linux::set_is_floating_stack();
+# endif
 }
 
 /////////////////////////////////////////////////////////////////////////////
